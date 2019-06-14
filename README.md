@@ -1,24 +1,56 @@
 # fancyBox
 
-jQuery lightbox script for displaying images, videos and more.
+lightbox script for displaying images, videos and more.
 Touch enabled, responsive and fully customizable.
 
-See the [project page](http://fancyapps.com/fancybox/3/) for documentation and a demonstration.
+See the [project es page](http://zengde.github.io/fancybox.js) for documentation and a demonstration.
 
-Follow [@thefancyapps](//twitter.com/thefancyapps) for updates.
+Default is above es6 stage-3,rest broswers visit [project common page](http://zengde.github.io/fancybox.js/index-umd.html)
 
+## Run Demo
+
+```cmd
+node server.js
+```
 
 ## Quick start
 
-1\.  Add latest jQuery and fancyBox files
-
+1\.  Add latest fancyBox files
+1.1 with all built in modules
+1.1.1 above es6 stage-3
 ```html
-<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-
-<link  href="/path/to/jquery.fancybox.min.css" rel="stylesheet">
-<script src="/path/to/jquery.fancybox.min.js"></script>
+<link  href="/path/to/dist/fancybox.min.css" rel="stylesheet">
+<script src="/path/to/dist/fancybox.es.js"></script>
 ```
 
+1.1.2 common
+```html
+<link  href="/path/to/dist/fancybox.min.css" rel="stylesheet">
+<script src="/path/to/dist/fancybox-umd.js"></script>
+```
+
+1.2 certain modules
+1.2.1 above es6 stage-3
+```html
+<link  href="/path/to/dist/fancybox.min.css" rel="stylesheet">
+<script src="/path/to/src/default.js"></script> // must be first
+<script src="/path/to/src/core.js"></script>
+<script src="/path/to/src/fullscreen.js"></script> // optional
+<script src="/path/to/src/guestures.js"></script> // optional
+<script src="/path/to/src/media.js"></script> // optional
+<script src="/path/to/src/share.js"></script> // optional
+<script src="/path/to/src/slideshow.js"></script> // optional
+<script src="/path/to/src/thumbs.js"></script> // optional
+<script src="/path/to/src/wheel.js"></script> // optional
+<script src="/path/to/src/hash.js"></script> // optional
+```
+1.2.2 common
+```html
+<link  href="/path/to/dist/fancybox.min.css" rel="stylesheet">
+<script src="/path/to/dist/libs/default.js"></script>
+<script src="/path/to/dist/libs/core.js"></script>
+// etc
+```
 
 2\.  Create links
 
@@ -45,7 +77,7 @@ A commercial license is required for all commercial applications (including site
 
 ## Bugs and feature requests
 
-If you find a bug, please report it [here on Github](https://github.com/fancyapps/fancybox/issues).
+If you find a bug, please report it [here on Github](https://github.com/zengde/fancybox.js/issues).
 
 Guidelines for bug reports:
 

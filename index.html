@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>My page</title>
+
+	<!-- CSS -->
+	<link rel="stylesheet" type="text/css" href="dist/fancybox.min.css">
+	<style lang="less">
+		#app {
+		  font-family: "Avenir", Helvetica, Arial, sans-serif;
+		  -webkit-font-smoothing: antialiased;
+		  -moz-osx-font-smoothing: grayscale;
+		  text-align: center;
+		  color: #2c3e50;
+		}
+		ul {
+		  list-style-type: none;
+		  padding: 0;
+		  display: flex;
+		}
+
+		li {
+		  display: inline-block;
+		  margin: 0 10px;
+		}
+
+		a {
+		  color: #42b983;
+		}
+		img {
+		  max-width: 100%;
+		}
+		
+		@media all and (min-width: 768px) {
+			.fancybox-thumbs {
+				top: auto!important;
+				width: auto!important;
+				bottom: 0!important;
+				left: 0!important;
+				right : 0!important;
+				height: 95px!important;
+				padding: 10px 10px 5px 10px!important;
+				box-sizing: border-box!important;
+				background: rgba(0, 0, 0, 0.3)!important;
+			}
+			
+			.fancybox-show-thumbs .fancybox-inner {
+				right: 0!important;
+				bottom: 95px!important;
+			}
+		}
+		
+		.fancybox-is-open .fancybox-stage {
+			overflow: visible;
+		}
+		.fancybox-stage {
+			transition: transform 100ms ease 0s;
+			display: flex;
+		}
+		.fancybox-slide {
+			position: relative;
+			flex-shrink: 0;
+			/**/display: block;
+		}
+		.fancybox-slide--image{
+			cursor: move;
+		}
+		.fancybox-image {
+			-webkit-user-drag: none;
+		}
+	</style>
+</head>
+<body>
+
+	<!-- Your HTML content goes here -->
+  <div id="app">
+	<ul>
+	  <li v-for="(v,k) in images" :key="k" @click="openGallery(k)">
+		<img :src="v.src" title="点击播放视频" alt="点击播放视频" fluid top>
+		<p>图片尺寸：{{v.info[0]}}*{{v.info[1]}}</p>
+		<div slot="footer" class="text-muted">上传者：{{v.realname}}</div>
+	  </li>
+	</ul>
+  </div>
+	  
+	<!-- JS -->
+	<script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.js"></script>
+	<!--<script src="dist/fancybox.es.js"></script>-->
+	<script src="src/js/default.js"></script>
+	<script src="src/js/core.js"></script>
+	<script src="src/js/fullscreen.js"></script>
+	<!----><script src="src/js/guestures.js"></script>
+	<script src="src/js/media.js"></script>
+	<script src="src/js/share.js"></script>
+	<script src="src/js/slideshow.js"></script>
+	<script src="src/js/thumbs.js"></script>
+	<script src="src/js/wheel.js"></script>
+	<!---->
+	<script src="src/js/hash.js"></script>
+	<script>
+
+	var app=new Vue({
+		el:'#app',
+		data:{
+			images: [
+			{
+			  src: "https://sachinchoolur.github.io/lightgallery.js/static/img/1.jpg",
+			  opts: {
+				caption: "图片尺寸",
+				thumb: "https://sachinchoolur.github.io/lightgallery.js/static/img/thumb-1.jpg"
+			  },
+			  info: [600, 800],
+			  realname: "admin"
+			},
+			{
+			  src: "https://sachinchoolur.github.io/lightgallery.js/static/img/2.jpg",
+			  opts: {
+				caption: "图片尺寸",
+				thumb: "https://sachinchoolur.github.io/lightgallery.js/static/img/thumb-2.jpg"
+			  },
+			  info: [600, 800],
+			  realname: "admin"
+			},
+			{
+			  src: "https://sachinchoolur.github.io/lightgallery.js/static/img/13.jpg",
+			  opts: {
+				caption: "图片尺寸",
+				thumb: "https://sachinchoolur.github.io/lightgallery.js/static/img/thumb-13.jpg"
+			  },
+			  info: [600, 800],
+			  realname: "admin"
+			}
+			]
+		},
+		methods:{
+			openGallery(index){
+				FancyBox.open(this.images,{
+					type:'image',
+					thumbs : {
+						autoStart : true,
+						axis      : 'x'
+					},
+					buttons: [
+						"zoom",
+						//"share",
+						"slideShow",
+						"fullScreen",
+						"download",
+						"thumbs",
+						"close"
+					],
+					//hideScrollbar: true,
+					hash: null,
+					lang: "zh-cn",
+					i18n:{
+						'zh-cn': {
+							CLOSE: "关闭",
+							NEXT: "下一个",
+							PREV: "上一个",
+							ERROR: "无法加载请求内容. <br/> 请稍后重试.",
+							PLAY_START: "开始播放",
+							PLAY_STOP: "暂停播放",
+							FULL_SCREEN: "全屏",
+							THUMBS: "缩略图",
+							DOWNLOAD: "下载",
+							SHARE: "分享",
+							ZOOM: "缩放"
+						}
+					}
+				},index);
+			}
+		}
+	})
+	</script>
+</body>
+</html>

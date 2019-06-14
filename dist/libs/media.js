@@ -1,0 +1,293 @@
+// ==================================================
+// fancyBox v3.5.7
+//
+// Licensed GPLv3 for open source use
+// or fancyBox Commercial License for commercial use
+//
+// http://github.com/zengde/fancybox.js/
+// Copyright 2019 fancyApps
+//
+// ==================================================
+"use strict";
+
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
+
+function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+// ==========================================================================
+//
+// Media
+// Adds additional media type support
+//
+// ==========================================================================
+(function (document) {
+  "use strict"; // Object containing properties for each media type
+
+  var FancyMediaDefaults = {
+    youtube: {
+      matcher: /(youtube\.com|youtu\.be|youtube\-nocookie\.com)\/(watch\?(.*&)?v=|v\/|u\/|embed\/?)?(videoseries\?list=(.*)|[\w-]{11}|\?listType=(.*)&list=(.*))(.*)/i,
+      params: {
+        autoplay: 1,
+        autohide: 1,
+        fs: 1,
+        rel: 0,
+        hd: 1,
+        wmode: "transparent",
+        enablejsapi: 1,
+        html5: 1
+      },
+      paramPlace: 8,
+      type: "iframe",
+      url: "https://www.youtube-nocookie.com/embed/$4",
+      thumb: "https://img.youtube.com/vi/$4/hqdefault.jpg"
+    },
+    vimeo: {
+      matcher: /^.+vimeo.com\/(.*\/)?([\d]+)(.*)?/,
+      params: {
+        autoplay: 1,
+        hd: 1,
+        show_title: 1,
+        show_byline: 1,
+        show_portrait: 0,
+        fullscreen: 1
+      },
+      paramPlace: 3,
+      type: "iframe",
+      url: "//player.vimeo.com/video/$2"
+    },
+    instagram: {
+      matcher: /(instagr\.am|instagram\.com)\/p\/([a-zA-Z0-9_\-]+)\/?/i,
+      type: "image",
+      url: "//$1/p/$2/media/?size=l"
+    },
+    // Examples:
+    // http://maps.google.com/?ll=48.857995,2.294297&spn=0.007666,0.021136&t=m&z=16
+    // https://www.google.com/maps/@37.7852006,-122.4146355,14.65z
+    // https://www.google.com/maps/@52.2111123,2.9237542,6.61z?hl=en
+    // https://www.google.com/maps/place/Googleplex/@37.4220041,-122.0833494,17z/data=!4m5!3m4!1s0x0:0x6c296c66619367e0!8m2!3d37.4219998!4d-122.0840572
+    gmap_place: {
+      matcher: /(maps\.)?google\.([a-z]{2,3}(\.[a-z]{2})?)\/(((maps\/(place\/(.*)\/)?\@(.*),(\d+.?\d+?)z))|(\?ll=))(.*)?/i,
+      type: "iframe",
+      url: function url(rez) {
+        return "//maps.google." + rez[2] + "/?ll=" + (rez[9] ? rez[9] + "&z=" + Math.floor(rez[10]) + (rez[12] ? rez[12].replace(/^\//, "&") : "") : rez[12] + "").replace(/\?/, "&") + "&output=" + (rez[12] && rez[12].indexOf("layer=c") > 0 ? "svembed" : "embed");
+      }
+    },
+    // Examples:
+    // https://www.google.com/maps/search/Empire+State+Building/
+    // https://www.google.com/maps/search/?api=1&query=centurylink+field
+    // https://www.google.com/maps/search/?api=1&query=47.5951518,-122.3316393
+    gmap_search: {
+      matcher: /(maps\.)?google\.([a-z]{2,3}(\.[a-z]{2})?)\/(maps\/search\/)(.*)/i,
+      type: "iframe",
+      url: function url(rez) {
+        return "//maps.google." + rez[2] + "/maps?q=" + rez[5].replace("query=", "q=").replace("api=1", "") + "&output=embed";
+      }
+    }
+  }; // Formats matching url to final form
+
+  var format = function format(url, rez, params) {
+    if (!url) {
+      return;
+    }
+
+    params = params || "";
+
+    if (_typeof(params) === "object") {
+      params = Object.keys(params).map(function (key) {
+        return key + '=' + params[key];
+      }).join('&');
+    }
+
+    rez.forEach(function (value, index) {
+      url = url.replace("$" + index, value || "");
+    });
+
+    if (params.length) {
+      url += (url.indexOf("?") > 0 ? "&" : "?") + params;
+    }
+
+    return url;
+  };
+
+  FancyUtils.on(document, "objectNeedsType.fb", function (e, instance, item) {
+    var _this2 = this;
+
+    var url = item.src || "",
+        type = false,
+        media,
+        thumb,
+        rez,
+        params,
+        urlParams,
+        paramObj,
+        provider;
+    media = Object.assign({}, FancyMediaDefaults, item.opts.media); // Look for any matching media type
+
+    Object.entries(media).some(function (_ref) {
+      var _ref2 = _slicedToArray(_ref, 2),
+          providerName = _ref2[0],
+          providerOpts = _ref2[1];
+
+      rez = url.match(providerOpts.matcher);
+
+      if (!rez) {
+        return false;
+      }
+
+      type = providerOpts.type;
+      provider = providerName;
+      paramObj = {};
+
+      if (providerOpts.paramPlace && rez[providerOpts.paramPlace]) {
+        urlParams = rez[providerOpts.paramPlace];
+
+        if (urlParams[0] == "?") {
+          urlParams = urlParams.substring(1);
+        }
+
+        urlParams = urlParams.split("&");
+
+        for (var m = 0; m < urlParams.length; ++m) {
+          var p = urlParams[m].split("=", 2);
+
+          if (p.length == 2) {
+            paramObj[p[0]] = decodeURIComponent(p[1].replace(/\+/g, " "));
+          }
+        }
+      }
+
+      params = Object.assign({}, providerOpts.params, item.opts[providerName], paramObj);
+      url = FancyUtils.isFunction(providerOpts.url) ? providerOpts.url.call(_this2, rez, params, item) : format(providerOpts.url, rez, params);
+      thumb = FancyUtils.isFunction(providerOpts.thumb) ? providerOpts.thumb.call(_this2, rez, params, item) : format(providerOpts.thumb, rez);
+
+      if (providerName === "youtube") {
+        url = url.replace(/&t=((\d+)m)?(\d+)s/, function (match, p1, m, s) {
+          return "&start=" + ((m ? parseInt(m, 10) * 60 : 0) + parseInt(s, 10));
+        });
+      } else if (providerName === "vimeo") {
+        url = url.replace("&%23", "#");
+      }
+
+      return true;
+    }); // If it is found, then change content type and update the url
+
+    if (type) {
+      if (!item.opts.thumb && !(item.opts.$thumb && item.opts.$thumb.length)) {
+        item.opts.thumb = thumb;
+      }
+
+      if (type === "iframe") {
+        item.opts = Object.assign({}, item.opts, {
+          type: 'iframe',
+          iframe: {
+            preload: false,
+            attr: {
+              scrolling: "no"
+            }
+          }
+        });
+      }
+
+      Object.assign(item, {
+        src: url,
+        origSrc: item.src,
+        contentSource: provider,
+        contentType: type === "image" ? "image" : provider == "gmap_place" || provider == "gmap_search" ? "map" : "video"
+      });
+    } else if (url) {
+      item.opts.type = item.opts.defaultType;
+    }
+  }); // Load YouTube/Video API on request to detect when video finished playing
+
+  var VideoAPILoader = {
+    youtube: {
+      src: "https://www.youtube.com/iframe_api",
+      class: "YT",
+      loading: false,
+      loaded: false
+    },
+    vimeo: {
+      src: "https://player.vimeo.com/api/player.js",
+      class: "Vimeo",
+      loading: false,
+      loaded: false
+    },
+    load: function load(vendor) {
+      var _this = this,
+          script;
+
+      if (this[vendor].loaded) {
+        setTimeout(function () {
+          _this.done(vendor);
+        });
+        return;
+      }
+
+      if (this[vendor].loading) {
+        return;
+      }
+
+      this[vendor].loading = true;
+      script = document.createElement("script");
+      script.type = "text/javascript";
+      script.src = this[vendor].src;
+
+      if (vendor === "youtube") {
+        window.onYouTubeIframeAPIReady = function () {
+          _this[vendor].loaded = true;
+
+          _this.done(vendor);
+        };
+      } else {
+        script.onload = function () {
+          _this[vendor].loaded = true;
+
+          _this.done(vendor);
+        };
+      }
+
+      document.body.appendChild(script);
+    },
+    done: function done(vendor) {
+      var instance, $el, player;
+
+      if (vendor === "youtube") {
+        delete window.onYouTubeIframeAPIReady;
+      }
+
+      instance = FancyBox.getInstance();
+
+      if (instance) {
+        $el = instance.current.$content.querySelector("iframe");
+
+        if (vendor === "youtube" && YT !== undefined && YT) {
+          player = new YT.Player($el.id, {
+            events: {
+              onStateChange: function onStateChange(e) {
+                if (e.data == 0) {
+                  instance.next();
+                }
+              }
+            }
+          });
+        } else if (vendor === "vimeo" && Vimeo !== undefined && Vimeo) {
+          player = new Vimeo.Player($el);
+          player.on("ended", function () {
+            instance.next();
+          });
+        }
+      }
+    }
+  };
+  FancyUtils.on(document, "afterLoad.fb", function (e, instance, current) {
+    if (instance.group.length > 1 && (current.contentSource === "youtube" || current.contentSource === "vimeo")) {
+      VideoAPILoader.load(current.contentSource);
+    }
+  });
+})(document);

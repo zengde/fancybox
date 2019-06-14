@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>My page</title>
+
+	<!-- CSS -->
+	<link rel="stylesheet" type="text/css" href="dist/fancybox.min.css">
+	<style lang="less">
+		#app {
+			font-family: "Avenir", Helvetica, Arial, sans-serif;
+			-webkit-font-smoothing: antialiased;
+			-moz-osx-font-smoothing: grayscale;
+			text-align: center;
+			color: #2c3e50;
+		}
+
+		ul {
+			list-style-type: none;
+			padding: 0;
+			display: flex;
+		}
+
+		li {
+			display: inline-block;
+			margin: 0 10px;
+		}
+
+		a {
+			color: #42b983;
+		}
+
+		img {
+			max-width: 100%;
+		}
+
+		@media all and (min-width: 768px) {
+			.fancybox-thumbs {
+				top: auto !important;
+				width: auto !important;
+				bottom: 0 !important;
+				left: 0 !important;
+				right: 0 !important;
+				height: 95px !important;
+				padding: 10px 10px 5px 10px !important;
+				box-sizing: border-box !important;
+				background: rgba(0, 0, 0, 0.3) !important;
+			}
+
+			.fancybox-show-thumbs .fancybox-inner {
+				right: 0 !important;
+				bottom: 95px !important;
+			}
+		}
+
+		.fancybox-is-open .fancybox-stage {
+			overflow: visible;
+		}
+		.fancybox-stage {
+			transition: transform 100ms ease 0s;
+			display: flex;
+		}
+		.fancybox-slide {
+			position: relative;
+			flex-shrink: 0;
+			/**/display: block;
+		}
+		.fancybox-slide--image{
+			cursor: move;
+		}
+		.fancybox-image {
+			-webkit-user-drag: none;
+		}
+	</style>
+</head>
+
+<body>
+
+	<!-- Your HTML content goes here -->
+	<div id="app">
+		<ul>
+			<li v-for="(v,k) in images" :key="k" data-fancybox="images" @click="openGallery(k)">
+				<img :src="v.src" title="点击播放视频" alt="点击播放视频" fluid top>
+				<p>图片尺寸：{{v.info[0]}}*{{v.info[1]}}</p>
+				<div slot="footer" class="text-muted">上传者：{{v.realname}}</div>
+			</li>
+		</ul>
+	</div>
+
+	<!-- JS -->
+	<script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.js"></script>
+	<script src="dist/fancybox-umd.js"></script>
+
+	<script>
+		var images = [
+			{
+				src: "docs/img/tibet-1.jpg",
+				opts: {
+					caption: "图片尺寸",
+					thumb: "docs/img/thumbnails/tibet-1.jpg"
+				},
+				info: [600, 800],
+				realname: "admin"
+			},
+			{
+				src: "docs/img/tibet-2.jpg",
+				opts: {
+					caption: "图片尺寸",
+					thumb: "docs/img/thumbnails/tibet-2.jpg"
+				},
+				info: [600, 800],
+				realname: "admin"
+			},
+			{
+				src: "docs/img/tibet-3.jpg",
+				opts: {
+					caption: "图片尺寸",
+					thumb: "docs/img/thumbnails/tibet-3.jpg"
+				},
+				info: [600, 800],
+				realname: "admin"
+			}
+		];
+		images2 = [
+			{
+				src: "docs/img/tibet-1.jpg",
+				opts: {
+					caption: "图片尺寸",
+					thumb: "docs/img/thumbnails/tibet-1.jpg"
+				},
+				info: [600, 800],
+				realname: "admin"
+			},
+			{
+				src: "docs/img/tibet-2.jpg",
+				opts: {
+					caption: "图片尺寸",
+					thumb: "docs/img/thumbnails/tibet-2.jpg"
+				},
+				info: [600, 800],
+				realname: "admin"
+			},
+			{
+				src: "docs/img/tibet-3.jpg",
+				opts: {
+					caption: "图片尺寸",
+					thumb: "docs/img/thumbnails/tibet-3.jpg"
+				},
+				info: [600, 800],
+				realname: "admin"
+			}
+			/*
+			,
+			{
+				src: "https://www.youtube.com/watch?v=_sI_Ps7JSEk",
+				opts: {
+					type: false,
+					caption: "图片尺寸"
+				},
+				info: [600, 800],
+				realname: "admin"
+			},*/
+		];
+		var fancybox;
+		var app = new Vue({
+			el: '#app',
+			data: {
+				images: images
+			},
+			methods: {
+				openGallery(index) {
+					//fancybox=$.fancybox.open(images2,{
+					fancybox = FancyBox.open(images2, {
+						type: 'image',
+						thumbs: {
+							autoStart: true,
+							axis: 'x'
+						},
+						buttons: [
+							"zoom",
+							//"share",
+							"slideShow",
+							"fullScreen",
+							"download",
+							"thumbs",
+							"close"
+						],
+						//hideScrollbar: true,
+						hash: "images",
+						lang: "zh-cn",
+					}, index);
+				}
+			}
+		})
+	</script>
+</body>
+
+</html>
