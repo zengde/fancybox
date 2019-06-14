@@ -1,4 +1,4 @@
-# fancyBox
+# fancyBox.js
 
 lightbox script for displaying images, videos and more.
 Touch enabled, responsive and fully customizable.
@@ -16,20 +16,23 @@ node server.js
 ## Quick start
 
 1\.  Add latest fancyBox files
+
 1.1 with all built in modules
+
 1.1.1 above es6 stage-3
 ```html
 <link  href="/path/to/dist/fancybox.min.css" rel="stylesheet">
 <script src="/path/to/dist/fancybox.es.js"></script>
 ```
 
-1.1.2 common
+1.1.2 es5
 ```html
 <link  href="/path/to/dist/fancybox.min.css" rel="stylesheet">
 <script src="/path/to/dist/fancybox-umd.js"></script>
 ```
 
 1.2 certain modules
+
 1.2.1 above es6 stage-3
 ```html
 <link  href="/path/to/dist/fancybox.min.css" rel="stylesheet">
@@ -44,7 +47,7 @@ node server.js
 <script src="/path/to/src/wheel.js"></script> // optional
 <script src="/path/to/src/hash.js"></script> // optional
 ```
-1.2.2 common
+1.2.2 es5
 ```html
 <link  href="/path/to/dist/fancybox.min.css" rel="stylesheet">
 <script src="/path/to/dist/libs/default.js"></script>
